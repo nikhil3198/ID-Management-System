@@ -43,11 +43,10 @@
     background-color: black;
     clear: left;
     text-align: center;
-    position: fixed;
+      position: fixed;
     bottom: 0%;
     width: 100%;
 }
-
      </style>
 </head>
 <body>
@@ -59,7 +58,6 @@
       </div>
    </div>
 </div> 
-
 <?php
 
                             $servername = "localhost";
@@ -72,63 +70,89 @@
                             {
                             echo("conection failed!<br>");
                             }
-                          /*  else
+                            /*else
                             {
                             echo("conection established!<br>");
                             }*/
 
-
-$sql="";
-$sql.=$_POST["qry"];
-echo "<h3 style=\"margin-left:20px;font-family:monospace\">Entered Query</h3>";
-echo "<p style=\"margin-left:20px;\">" .$sql. "</p>" ."<br>";
-$a=explode(",",trim(trim(substr(explode("from",$sql)[0],7)."\n")," "));
-//var_dump($a);
+$sql = "SELECT * from person where aadhar_no=".$_POST['adr'];
 $result = mysqli_query($c, $sql);
-echo "<table style=\"margin-left:20px;margin-bottom:100px;\" border = '2'>";
+echo "<div style=\"margin-left:20px;margin-bottom:100px;\">";
 if (mysqli_num_rows($result) > 0) {
     // output data of each row
-    echo "</tr>";
-    foreach($a as $x)
-        {
-            $z = explode("AS", $x);
-            $b = trim($z[count($z) - 1], " ");
-            $c = explode(".",$b);
-            $i = count($c);
-            $d = trim($c[$i - 1], " ");
-           // echo "".trim($d, " ")."";
-            echo "<th style=\"text-align:center;padding:7px;\">".trim($d, " ")."</th>";
-        }
-    echo "<tr>";
     while($row = mysqli_fetch_assoc($result)) {
-        echo "<tr>";
-       // var_dump($row);
-        foreach($a as $x)
-        {
-            $z = explode("AS", $x);
-            $b = trim(trim($z[count($z) - 1], " "),"\n");
-            $c = explode(".",$b);
-            $i = count($c);
-            $d = trim(trim($c[$i - 1], " "), "\n");
-           // echo "".trim($d, " ")."~~";
-            echo "<td style=\"text-align:center;padding:7px;\">".$row[trim(trim($d, " "), "\n")]."</td>";
-        }
-        echo "</tr>";
+        echo "<h3>Person Details</h3>";
+        echo "Name: " . $row["name"]. "<br>". "Aadhar No: ". $row["aadhar_no"]. "<br>".  "Age: " . $row["age"]."<br>";
+            
     }
 }
-echo "</table>";
 
+$sql = "select Fathers_name from Aadhar_card where aadhar_no=".$_POST['adr'];
+$result = mysqli_query($c, $sql);
 
+if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    while($row = mysqli_fetch_assoc($result)) {
+        echo "Father's Name: " . $row["Fathers_name"]."<br>";
+    }
+}
 
+$sql = "SELECT * from person natural join master_details where aadhar_no=".$_POST['adr'];
+$result = mysqli_query($c, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    echo "<h3>Identification Details</h3>";
+    while($row = mysqli_fetch_assoc($result)) {
+        
+        echo "Passport No: " . $row["passport_no"]. "<br>". "Driving Licence No: ". $row["Dl_no"]. "<br>".  "Ration card No:" . $row["ration_cardno"]."<br>";
+        echo "Voter ID No: " . $row["voter_idno"]. "<br>";      
+    }
+}
+
+$sql = "select property.Area,reg_no from person natural join property where aadhar_no=".$_POST['adr'];
+$result = mysqli_query($c, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    echo "<h3>Property</h3>";
+    while($row = mysqli_fetch_assoc($result)) {
+       
+        echo "Property Owned: " . $row["Area"]."<br>" ."Plot No: " . $row["reg_no"]."<br><br>";
+    }
+}
+
+$sql = "select insurance.insurance_type,insurance.policy_no,insurance.amt_insured from person natural join insurance where aadhar_no=".$_POST['adr'];
+$result = mysqli_query($c, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    echo "<h3>Insurance Details</h3>";
+    while($row = mysqli_fetch_assoc($result)) {
+        
+        echo "Insurance Type: " . $row["insurance_type"]. "<br>". "Policy No: " . $row["policy_no"]. "<br>".      "Amount Insured: " . $row["amt_insured"]. "<br>";
+    }
+}
+
+$sql = "select Bank_account.Bank_Name,Bank_account.Branch,Bank_account.acc_type,Bank_account.acc_no from person natural join Bank_account where aadhar_no=".$_POST['adr'];
+$result = mysqli_query($c, $sql);
+
+if (mysqli_num_rows($result) > 0) {
+    // output data of each row
+    echo "<h3>Account Details</h3>";
+    while($row = mysqli_fetch_assoc($result)) {
+        
+        echo "Bank name: " . $row["Bank_Name"]."<br>". "Branch: " . $row["Branch"]. "<br>".  "Account type: " . $row["acc_type"]. "<br>".  "Account Number: " . $row["acc_no"]. "<br>";
+    }
+}
+
+echo "</div>";
 ?>
 
-<footer>Copyright &copy; DataWorld.com</footer>
 
+<footer>Copyright &copy; DataWorld.com</footer>
 </body>
 </html>
-
-
-
 
 
 
